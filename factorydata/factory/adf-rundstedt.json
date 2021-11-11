@@ -1,0 +1,9 @@
+{
+	"name": "adf-rundstedt",
+	"location": "westeurope",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "6cd7192a-3f99-4dc5-ad57-97eb42147bf9",
+		"tenantId": "201452c3-8938-4d5f-89f2-0f1098708589"
+	}
+}
