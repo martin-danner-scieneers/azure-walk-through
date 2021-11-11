@@ -1,0 +1,36 @@
+{
+	"name": "Model_training",
+	"properties": {
+		"activities": [
+			{
+				"name": "Machine Learning Training Pipeline",
+				"type": "AzureMLExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"experimentName": "Model_Deployment_Rundstedt",
+					"mlPipelineParameters": {
+						"model_name": "Finetuned_Bert_Model_V2",
+						"model_path_on_blob": "models/"
+					},
+					"mlPipelineId": "d751a925-d12b-44f7-bd74-03b688cf9e2d"
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureMLRundstedt",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "Model_Deployment"
+		},
+		"annotations": []
+	}
+}
