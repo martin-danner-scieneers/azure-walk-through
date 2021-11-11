@@ -1,0 +1,642 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "adf-rundstedt"
+		},
+		"AzureMLRundstedt_properties_typeProperties_subscriptionId": {
+			"type": "string",
+			"defaultValue": "3aef07e0-41f3-4130-bc27-9d3652939fea"
+		},
+		"AzureMLRundstedt_properties_typeProperties_resourceGroupName": {
+			"type": "string",
+			"defaultValue": "walk-through-azureml-rundstedt"
+		},
+		"AzureMLRundstedt_properties_typeProperties_mlWorkspaceName": {
+			"type": "string",
+			"defaultValue": "azml-rundstedt"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/00_dataset_registration')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Machine Learning Dataset Registration",
+						"type": "AzureMLExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"experimentName": "Dataset Registration",
+							"mlPipelineParameters": {
+								"dataset_name": {
+									"value": "@pipeline().parameters.dataset_name",
+									"type": "Expression"
+								},
+								"dataset_path_on_blob": {
+									"value": "@pipeline().parameters.dataset_path_on_blob",
+									"type": "Expression"
+								},
+								"datastore_name": {
+									"value": "@pipeline().parameters.datastore_name",
+									"type": "Expression"
+								}
+							},
+							"mlPipelineId": "835ad578-fd8b-45a4-939e-7f52ae21d51c"
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureMLRundstedt",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"dataset_name": {
+						"type": "string",
+						"defaultValue": "small_dataset_movie_ratings"
+					},
+					"dataset_path_on_blob": {
+						"type": "string",
+						"defaultValue": "datasets/small_dataset/"
+					},
+					"datastore_name": {
+						"type": "string",
+						"defaultValue": "datalake_rundstedt"
+					}
+				},
+				"folder": {
+					"name": "Dataset_Preparation"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureMLRundstedt')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/00_main_end2end')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "01_model_training",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "00_dataset_registration",
+								"dependencyConditions": [
+									"Completed"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "01_model_training",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"model_name": {
+									"value": "@pipeline().parameters.model_name",
+									"type": "Expression"
+								},
+								"model_path_on_blob": {
+									"value": "@pipeline().parameters.model_path_on_blob",
+									"type": "Expression"
+								},
+								"dataset_name": {
+									"value": "@pipeline().parameters.dataset_name",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "02_model_registration",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "01_model_training",
+								"dependencyConditions": [
+									"Completed"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "02_model_registration",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"model_name": {
+									"value": "@pipeline().parameters.model_name",
+									"type": "Expression"
+								},
+								"model_file_path_on_blob": {
+									"value": "@concat(pipeline().parameters.model_path_on_blob, pipeline().parameters.model_name)",
+									"type": "Expression"
+								},
+								"tag": {
+									"value": "@pipeline().parameters.tag",
+									"type": "Expression"
+								},
+								"datastore_name": {
+									"value": "@pipeline().parameters.datastore_name",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "03_model_deployment",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "02_model_registration",
+								"dependencyConditions": [
+									"Completed"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "03_model_deployment",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"model_name": {
+									"value": "@pipeline().parameters.model_name",
+									"type": "Expression"
+								},
+								"service_name": {
+									"value": "@pipeline().parameters.service_name",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "00_dataset_registration",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "00_dataset_registration",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"dataset_name": {
+									"value": "@pipeline().parameters.dataset_name",
+									"type": "Expression"
+								},
+								"dataset_path_on_blob": {
+									"value": "@pipeline().parameters.dataset_path_on_blob",
+									"type": "Expression"
+								},
+								"datastore_name": {
+									"value": "@pipeline().parameters.datastore_name",
+									"type": "Expression"
+								}
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"dataset_name": {
+						"type": "string",
+						"defaultValue": "small_dataset_movie_ratings"
+					},
+					"dataset_path_on_blob": {
+						"type": "string",
+						"defaultValue": "datasets/small_dataset/"
+					},
+					"datastore_name": {
+						"type": "string",
+						"defaultValue": "datalake_rundstedt"
+					},
+					"model_name": {
+						"type": "string",
+						"defaultValue": "Test_Bert_Model_IMBD"
+					},
+					"model_path_on_blob": {
+						"type": "string",
+						"defaultValue": "models/"
+					},
+					"tag": {
+						"type": "string",
+						"defaultValue": "MyCustomTag"
+					},
+					"service_name": {
+						"type": "string",
+						"defaultValue": "deployed-test-bert-model-imbd"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/01_model_training')]",
+				"[concat(variables('factoryId'), '/pipelines/02_model_registration')]",
+				"[concat(variables('factoryId'), '/pipelines/03_model_deployment')]",
+				"[concat(variables('factoryId'), '/pipelines/00_dataset_registration')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/00_model_main')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "01_model_training",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "01_model_training",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"model_name": {
+									"value": "@pipeline().parameters.model_name",
+									"type": "Expression"
+								},
+								"model_path_on_blob": {
+									"value": "@pipeline().parameters.model_path_on_blob",
+									"type": "Expression"
+								},
+								"dataset_name": {
+									"value": "@pipeline().parameters.dataset_name",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "02_model_registration",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "01_model_training",
+								"dependencyConditions": [
+									"Completed"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "02_model_registration",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"model_name": {
+									"value": "@pipeline().parameters.model_name",
+									"type": "Expression"
+								},
+								"model_file_path_on_blob": {
+									"value": "@concat(pipeline().parameters.model_path_on_blob, pipeline().parameters.model_name)",
+									"type": "Expression"
+								},
+								"tag": {
+									"value": "@pipeline().parameters.tag",
+									"type": "Expression"
+								},
+								"datastore_name": {
+									"value": "@pipeline().parameters.datastore_name",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "03_model_deployment",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "02_model_registration",
+								"dependencyConditions": [
+									"Completed"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "03_model_deployment",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"model_name": {
+									"value": "@pipeline().parameters.model_name",
+									"type": "Expression"
+								},
+								"service_name": {
+									"value": "@pipeline().parameters.service_name",
+									"type": "Expression"
+								}
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"model_name": {
+						"type": "string",
+						"defaultValue": "Bert_Review_Movie_Ratings"
+					},
+					"model_path_on_blob": {
+						"type": "string",
+						"defaultValue": "models/"
+					},
+					"tag": {
+						"type": "string",
+						"defaultValue": "Model to analyze sentiment of movie ratings"
+					},
+					"datastore_name": {
+						"type": "string",
+						"defaultValue": "datalake_rundstedt"
+					},
+					"service_name": {
+						"type": "string",
+						"defaultValue": "bert-movie-rating-endpoint"
+					},
+					"dataset_name": {
+						"type": "string",
+						"defaultValue": "small_dataset_movie_ratings"
+					}
+				},
+				"folder": {
+					"name": "Model_Deployment"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/01_model_training')]",
+				"[concat(variables('factoryId'), '/pipelines/02_model_registration')]",
+				"[concat(variables('factoryId'), '/pipelines/03_model_deployment')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/01_model_training')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Machine Learning Training Pipeline",
+						"type": "AzureMLExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"experimentName": "Model_Deployment",
+							"mlPipelineParameters": {
+								"model_name": {
+									"value": "@pipeline().parameters.model_name",
+									"type": "Expression"
+								},
+								"model_path_on_blob": {
+									"value": "@pipeline().parameters.model_path_on_blob",
+									"type": "Expression"
+								},
+								"dataset_name": {
+									"value": "@pipeline().parameters.dataset_name",
+									"type": "Expression"
+								}
+							},
+							"mlPipelineId": "d751a925-d12b-44f7-bd74-03b688cf9e2d"
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureMLRundstedt",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"model_name": {
+						"type": "string",
+						"defaultValue": "Finetuned_Bert_Model_IMBD"
+					},
+					"model_path_on_blob": {
+						"type": "string",
+						"defaultValue": "models/"
+					},
+					"dataset_name": {
+						"type": "string",
+						"defaultValue": "small_dataset_movie_ratings"
+					}
+				},
+				"folder": {
+					"name": "Model_Deployment"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureMLRundstedt')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/02_model_registration')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Machine Learning Model Registration",
+						"type": "AzureMLExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"experimentName": "Model_Deployment",
+							"mlPipelineParameters": {
+								"model_name": {
+									"value": "@pipeline().parameters.model_name",
+									"type": "Expression"
+								},
+								"model_file_path_on_blob": {
+									"value": "@pipeline().parameters.model_file_path_on_blob",
+									"type": "Expression"
+								},
+								"tag": {
+									"value": "@pipeline().parameters.tag",
+									"type": "Expression"
+								},
+								"datastore_name": {
+									"value": "@pipeline().parameters.datastore_name",
+									"type": "Expression"
+								}
+							},
+							"mlPipelineId": "269e727c-1d0f-436f-bab4-aef3824fb631"
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureMLRundstedt",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"model_name": {
+						"type": "string",
+						"defaultValue": "Finetuned_Bert_Model_IMBD"
+					},
+					"model_file_path_on_blob": {
+						"type": "string",
+						"defaultValue": "models/Finetuned_Bert_Model_IMBD"
+					},
+					"tag": {
+						"type": "string",
+						"defaultValue": "MyCustomTag"
+					},
+					"datastore_name": {
+						"type": "string",
+						"defaultValue": "datalake_rundstedt"
+					}
+				},
+				"folder": {
+					"name": "Model_Deployment"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureMLRundstedt')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/03_model_deployment')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Machine Learning Deploy Model",
+						"type": "AzureMLExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"experimentName": "Model_Deployment",
+							"mlPipelineParameters": {
+								"model_name": {
+									"value": "@pipeline().parameters.model_name",
+									"type": "Expression"
+								},
+								"service_name": {
+									"value": "@pipeline().parameters.service_name",
+									"type": "Expression"
+								}
+							},
+							"mlPipelineId": "7580b066-399c-441f-a41c-e4d2daeea671"
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureMLRundstedt",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"model_name": {
+						"type": "string",
+						"defaultValue": "Finetuned_Bert_Model_IMBD"
+					},
+					"service_name": {
+						"type": "string",
+						"defaultValue": "deployed-bert-model-imbd"
+					}
+				},
+				"folder": {
+					"name": "Model_Deployment"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureMLRundstedt')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureMLRundstedt')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureMLService",
+				"typeProperties": {
+					"subscriptionId": "[parameters('AzureMLRundstedt_properties_typeProperties_subscriptionId')]",
+					"resourceGroupName": "[parameters('AzureMLRundstedt_properties_typeProperties_resourceGroupName')]",
+					"mlWorkspaceName": "[parameters('AzureMLRundstedt_properties_typeProperties_mlWorkspaceName')]",
+					"authentication": "MSI"
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}

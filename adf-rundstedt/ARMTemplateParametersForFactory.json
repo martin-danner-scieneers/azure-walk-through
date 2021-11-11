@@ -1,0 +1,18 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "adf-rundstedt"
+		},
+		"AzureMLRundstedt_properties_typeProperties_subscriptionId": {
+			"value": "3aef07e0-41f3-4130-bc27-9d3652939fea"
+		},
+		"AzureMLRundstedt_properties_typeProperties_resourceGroupName": {
+			"value": "walk-through-azureml-rundstedt"
+		},
+		"AzureMLRundstedt_properties_typeProperties_mlWorkspaceName": {
+			"value": "azml-rundstedt"
+		}
+	}
+}
