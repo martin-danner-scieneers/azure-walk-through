@@ -147,7 +147,7 @@
 			},
 			"model_name": {
 				"type": "string",
-				"defaultValue": "Finetuned_Bert_Model_IMBD"
+				"defaultValue": "Test_Bert_Model_IMBD"
 			},
 			"model_path_on_blob": {
 				"type": "string",
@@ -159,7 +159,7 @@
 			},
 			"service_name": {
 				"type": "string",
-				"defaultValue": "deployed-bert-model-imbd"
+				"defaultValue": "deployed-test-bert-model-imbd"
 			}
 		},
 		"annotations": []
