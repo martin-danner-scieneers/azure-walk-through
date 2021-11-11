@@ -15,7 +15,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"experimentName": "Model_Deployment_Rundstedt",
+					"experimentName": "Model_Deployment",
 					"mlPipelineParameters": {
 						"model_name": {
 							"value": "@pipeline().parameters.model_name",
