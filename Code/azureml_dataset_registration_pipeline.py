@@ -1,7 +1,7 @@
 """
 Created in November 2021
 
-Python code to construct the pipeline for model training
+Python code to construct the pipeline for model registration
 
 @author: Martin Danner
 @company: scieneers GmbH
@@ -14,7 +14,6 @@ from utils.attach_datastore import get_datastore
 from utils.env_variables import Env
 from azureml.core import Environment, Experiment, Workspace
 from azureml.core.runconfig import RunConfiguration
-from azureml.data import OutputFileDatasetConfig
 from azureml.pipeline.core import Pipeline, PipelineEndpoint, PipelineParameter
 from azureml.pipeline.steps import PythonScriptStep
 from azureml.core.authentication import InteractiveLoginAuthentication
@@ -53,12 +52,6 @@ if aml_compute is not None:
     print("aml_compute:")
     print(aml_compute)
 
-# Read the datastore config
-datastore = get_datastore(ws)
-if datastore is not None:
-    print("datastore")
-    print(datastore)
-
 # Set environment
 env = Environment.get(workspace=ws, name="AzureML-Minimal")
 
@@ -76,32 +69,26 @@ run_config.target = aml_compute
 run_config.environment = env
 
 # Setup pipeline parameters
-model_name = PipelineParameter(
-    name="model_name", default_value="Finetuned_Bert_Model_IMBD")
 dataset_name = PipelineParameter(
     name="dataset_name", default_value="small_dataset_movie_ratings")
-model_path_on_blob = PipelineParameter(
-    name="model_path_on_blob", default_value="models/")
-
-    
-# Setup output for processed data
-output = OutputFileDatasetConfig(
-    name="datasetconfig", destination=(datastore, "/"))
+dataset_path_on_blob = PipelineParameter(
+    name="dataset_path_on_blob", default_value="datasets/small_dataset/")
+datastore_name = PipelineParameter(
+    name="datastore_name", default_value="datalake_rundstedt")
 
 # Setup python script task
 source_directory = os.path.join(base_dir)
 step1 = PythonScriptStep(
     runconfig=run_config,
     allow_reuse=False,
-    name="Training_Step",
-    script_name="training_script.py",
+    name="Registration_Step",
+    script_name="dataset_registration_script.py",
     source_directory=script_dir,
-    arguments=["--model_name", model_name, "--dataset_name", dataset_name, "--model_path_on_blob", 
-                model_path_on_blob, "--output", output]
+    arguments=["--dataset_name", dataset_name, "--dataset_path_on_blob", dataset_path_on_blob, "--datastore_name", datastore_name]
     )
 
 # Set the pipeline name
-pipeline_name = "Training_Bert_Model"
+pipeline_name = "Register_Dataset"
 
 # Set the Experiment name
 experiment_name = "Pipeline_Deployment"

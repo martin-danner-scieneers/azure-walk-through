@@ -84,7 +84,7 @@ step1 = PythonScriptStep(
     runconfig=run_config,
     allow_reuse=False,
     name="Registration_Step",
-    script_name="registration_script.py",
+    script_name="model_registration_script.py",
     source_directory=script_dir,
     arguments=["--model_name", model_name, "--model_file_path_on_blob", model_file_path_on_blob, "--tag", tag,  "--datastore_name", datastore_name]
     )

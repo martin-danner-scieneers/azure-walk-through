@@ -65,11 +65,11 @@ def register_model(ws:Workspace, model_name:str, model_path, tags_dict: dict) ->
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Process input arguments to interact with the underlying Seq2Seq architecture.")
+    parser = argparse.ArgumentParser(description="Process input arguments.")
     parser.add_argument("-mn", "--model_name", type=str, help="Name of the model including filename extension .h5.")
     parser.add_argument("-mfpob", "--model_file_path_on_blob", type=str, help="Path to the model on datastore.")
     parser.add_argument("-t", "--tag", type=str, help="Additional tag to be added to the registered model" )
-    parser.add_argument("-dsn", "--datastore_name", type=str, help="Name of the datastore where the model file can be found " )
+    parser.add_argument("-dsn", "--datastore_name", type=str, help="Name of the datastore where the model file can be found" )
 
 
     args = parser.parse_args()

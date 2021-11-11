@@ -90,7 +90,7 @@ def deploy_model(ws: Workspace, model_name:str, service_name:str, entry_script_n
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Process input arguments to interact with the underlying Seq2Seq architecture.")
+    parser = argparse.ArgumentParser(description="Process input arguments.")
     parser.add_argument("-mn", "--model_name", type=str, help="Name of the model")
     parser.add_argument("-sn", "--service_name", type=str, help="Name of the deployed service")
 

@@ -9,9 +9,10 @@ Python code for finetuning a pretrained bert model
 """
 
 from azureml.data import OutputFileDatasetConfig
+from transformers import  AutoModelForSequenceClassification, TrainingArguments, Trainer
+from azureml.core import Run, Workspace, Dataset
 from datasets import load_dataset
 from transformers import AutoTokenizer, AutoModelForSequenceClassification, TrainingArguments, Trainer
-from azureml.core import Datastore, Run, Workspace
 import logging
 import argparse
 from azureml.core.run import _OfflineRun
@@ -19,6 +20,7 @@ from typing import Tuple
 import os
 import ntpath 
 import torch
+import pickle
 
 logging.getLogger().setLevel(logging.DEBUG)
 
@@ -42,6 +44,15 @@ def get_current_workspace() -> Tuple[Workspace, Run]:
         ws = run.experiment.workspace
     return ws, run
 
+def get_training_dataset_by_name(ws: Workspace, dataset_name: str):
+    
+    ds = Dataset.get_by_name(ws, name=dataset_name)
+    ds_path = ds.download()[0]
+    with open(ds_path, 'rb') as f:
+        dataset = pickle.load(f)
+
+    return dataset
+
 def write_model(model, model_name: str, run: Run, output_config: OutputFileDatasetConfig, output: str):
     """Outputs the processed data to the defined output (pipeline or offline run)
 
@@ -62,7 +73,8 @@ def write_model(model, model_name: str, run: Run, output_config: OutputFileDatas
 
 
 def train_bert_model():
-    logging.info('Retrieving training data!')
+
+    logging.info('Preprocessing training data!')
 
     dataset = load_dataset("imdb")
     tokenizer = AutoTokenizer.from_pretrained("bert-base-cased")
@@ -82,7 +94,7 @@ def train_bert_model():
 
     training_args = TrainingArguments("test_trainer")
 
-    trainer = Trainer(model=model, args=training_args, train_dataset=small_train_dataset, eval_dataset = small_eval_dataset)
+    trainer = Trainer(model=model, args=training_args, train_dataset=small_train_dataset, eval_dataset=small_eval_dataset)
 
     trainer.train()
 
@@ -91,31 +103,27 @@ def train_bert_model():
     return model
 
 def main():
-    parser = argparse.ArgumentParser(description="Process input arguments to interact with the underlying Seq2Seq architecture.")
-    parser.add_argument("-mn", "--model_name", type=str, help="Name of the model including filename extension .h5.")
+    parser = argparse.ArgumentParser(description="Process input arguments.")
+    parser.add_argument("-mn", "--model_name", type=str, help="Name of the model to be trained")
+    parser.add_argument("-dn", "--dataset_name", type=str, help="Name of the registered dataset") 
     parser.add_argument("-mpob", "--model_path_on_blob", type=str, help="Path to the model on datastore.")
     parser.add_argument("-o", "--output", type=str)
 
     args = parser.parse_args()
 
     model_name = args.model_name
+    dataset_name = args.dataset_name
     model_path_on_blob = args.model_path_on_blob
     output = args.output
-
 
     # Get the default workspace
     ws, run = get_current_workspace()
     print(f"Current workspace: {ws}")
 
-    # Get the default datastore
-    datastore = Datastore.get_default(ws)
-    print(f"Using Datastore: {datastore.name}")
+    #dataset = get_training_dataset_by_name(ws, dataset_name)
 
     model = train_bert_model()
     write_model(model, model_name, run, output, model_path_on_blob)
-    
-
 
 if __name__ == '__main__':
     main()
-

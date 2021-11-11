@@ -13,7 +13,6 @@ dependencies:
 
   - pip:
     - azureml-sdk
-    - pandas
     - transformers
     - datasets
     - python-dotenv
