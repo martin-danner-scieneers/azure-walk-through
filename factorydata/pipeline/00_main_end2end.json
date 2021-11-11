@@ -32,10 +32,6 @@
 						"dataset_name": {
 							"value": "@pipeline().parameters.dataset_name",
 							"type": "Expression"
-						},
-						"datastore_name": {
-							"value": "@pipeline().parameters.datastore_name",
-							"type": "Expression"
 						}
 					}
 				}

@@ -28,10 +28,6 @@
 						"dataset_name": {
 							"value": "@pipeline().parameters.dataset_name",
 							"type": "Expression"
-						},
-						"datastore_name": {
-							"value": "@pipeline().parameters.datastore_name",
-							"type": "Expression"
 						}
 					},
 					"mlPipelineId": "d751a925-d12b-44f7-bd74-03b688cf9e2d"
@@ -54,10 +50,6 @@
 			"dataset_name": {
 				"type": "string",
 				"defaultValue": "small_dataset_movie_ratings"
-			},
-			"datastore_name": {
-				"type": "string",
-				"defaultValue": "datalake_rundstedt"
 			}
 		},
 		"folder": {
