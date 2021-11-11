@@ -9,8 +9,8 @@ Python code to construct the pipeline for model training
 """
 
 
+from azureml._base_sdk_common.common import YAML_EXTENSION
 from utils.attach_compute import get_compute_by_args
-from utils.attach_datastore import get_datastore
 from utils.env_variables import Env
 from azureml.core import Environment, Experiment, Workspace
 from azureml.core.runconfig import RunConfiguration
@@ -19,6 +19,8 @@ from azureml.pipeline.core import Pipeline, PipelineEndpoint, PipelineParameter
 from azureml.pipeline.steps import PythonScriptStep
 from azureml.core.authentication import InteractiveLoginAuthentication
 import os
+import uuid
+
 
 
 # Read the .env variables
@@ -73,10 +75,7 @@ run_config.environment = env
 model_name = PipelineParameter(
     name="model_name", default_value="Finetuned_Bert_Model_IMBD")
 service_name = PipelineParameter(
-    name="service_name", default_value="Deployed_Bert_Model_IMBD")
-datastore_name = PipelineParameter(
-    name="datastore_name", default_value="datalake_rundstedt")
-
+    name="service_name", default_value="Deployed_Bert_Model_IMBD_{}".format(uuid.uuid4().hex))
 
 
 # Setup python script task

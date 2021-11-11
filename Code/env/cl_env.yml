@@ -1,0 +1,21 @@
+name: Cluster_Env
+
+channels:
+  - conda-forge
+  - defaults
+
+dependencies:
+  - python=3.8
+  - pip
+  - numpy
+  - pytorch 
+  - cudatoolkit=10.2
+
+  - pip:
+    - azureml-sdk
+    - pandas
+    - transformers
+    - datasets
+    - python-dotenv
+    - azureml-defaults
+    
