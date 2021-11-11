@@ -1,0 +1,13 @@
+{
+	"name": "AzureMLRundstedt",
+	"properties": {
+		"annotations": [],
+		"type": "AzureMLService",
+		"typeProperties": {
+			"subscriptionId": "3aef07e0-41f3-4130-bc27-9d3652939fea",
+			"resourceGroupName": "walk-through-azureml-rundstedt",
+			"mlWorkspaceName": "azml-rundstedt",
+			"authentication": "MSI"
+		}
+	}
+}
