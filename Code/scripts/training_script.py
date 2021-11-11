@@ -8,23 +8,17 @@ Python code for finetuning a pretrained bert model
 @mail: martin.danner@scieneers.de
 """
 
-from azureml.core.authentication import InteractiveLoginAuthentication
-from azureml.core.model import Model
-from azureml.core import Dataset, Datastore, Workspace
-from azureml.data.datapath import DataPath
 from azureml.data import OutputFileDatasetConfig
 from datasets import load_dataset
 from transformers import AutoTokenizer, AutoModelForSequenceClassification, TrainingArguments, Trainer
-from azureml.core import Dataset, Datastore, Run, Workspace
-import numpy as np
-from datasets import load_metric
-import torch.onnx
+from azureml.core import Datastore, Run, Workspace
 import logging
 import argparse
 from azureml.core.run import _OfflineRun
 from typing import Tuple
 import os
 import ntpath 
+import torch
 
 logging.getLogger().setLevel(logging.DEBUG)
 
@@ -37,14 +31,12 @@ def get_current_workspace() -> Tuple[Workspace, Run]:
     """      
     run = Run.get_context()
     if type(run) == _OfflineRun:
-        from utils.env_variables import Env
+        from Code.utils.env_variables import Env
         e = Env()
-        #interactive_auth  = InteractiveLoginAuthentication(tenant_id=e.tenant_id)
         ws = Workspace.get(
             name=e.ws_name,
             subscription_id=e.ws_subscription_id,
             resource_group=e.ws_resource_group,
-            #auth=interactive_auth
         )
     else:
         ws = run.experiment.workspace

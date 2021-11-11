@@ -53,12 +53,6 @@ if aml_compute is not None:
     print("aml_compute:")
     print(aml_compute)
 
-# Read the datastore config
-datastore = get_datastore(ws)
-if datastore is not None:
-    print("datastore")
-    print(datastore)
-
 # Set environment
 env = Environment.get(workspace=ws, name="AzureML-Minimal")
 
@@ -78,12 +72,11 @@ run_config.environment = env
 # Setup pipeline parameters
 model_name = PipelineParameter(
     name="model_name", default_value="Finetuned_Bert_Model_IMBD")
-model_path_on_blob = PipelineParameter(
-    name="model_path_on_blob", default_value="models/")
+service_name = PipelineParameter(
+    name="service_name", default_value="Deployed_Bert_Model_IMBD")
+datastore_name = PipelineParameter(
+    name="datastore_name", default_value="datalake_rundstedt")
 
-# Setup output for processed data
-output = OutputFileDatasetConfig(
-    name="datasetconfig", destination=(datastore, "/"))
 
 
 # Setup python script task
@@ -91,14 +84,14 @@ source_directory = os.path.join(base_dir)
 step1 = PythonScriptStep(
     runconfig=run_config,
     allow_reuse=False,
-    name="Training_Step",
-    script_name="training_script.py",
+    name="Deployment_Step",
+    script_name="deployment_script.py",
     source_directory=script_dir,
-    arguments=["--model_name", model_name, "--model_path_on_blob", model_path_on_blob, "--output", output]
+    arguments=["--model_name", model_name, "--service_name", service_name]
     )
 
 # Set the pipeline name
-pipeline_name = "Finetuning_Bert_Model"
+pipeline_name = "Deploy_Model"
 
 # Set the Experiment name
 experiment_name = "Pipeline_Deployment"
