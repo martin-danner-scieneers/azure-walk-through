@@ -24,6 +24,10 @@
 						"model_path_on_blob": {
 							"value": "@pipeline().parameters.model_path_on_blob",
 							"type": "Expression"
+						},
+						"dataset_name": {
+							"value": "@pipeline().parameters.dataset_name",
+							"type": "Expression"
 						}
 					},
 					"mlPipelineId": "d751a925-d12b-44f7-bd74-03b688cf9e2d"
@@ -42,6 +46,10 @@
 			"model_path_on_blob": {
 				"type": "string",
 				"defaultValue": "models/"
+			},
+			"dataset_name": {
+				"type": "string",
+				"defaultValue": "small_dataset_movie_ratings"
 			}
 		},
 		"folder": {
