@@ -1,9 +1,9 @@
 {
-	"name": "01_model_training",
+	"name": "00_dataset_registration",
 	"properties": {
 		"activities": [
 			{
-				"name": "Machine Learning Training Pipeline",
+				"name": "Machine Learning Dataset Registration",
 				"type": "AzureMLExecutePipeline",
 				"dependsOn": [],
 				"policy": {
@@ -15,18 +15,14 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"experimentName": "Model_Deployment",
+					"experimentName": "Dataset Registration",
 					"mlPipelineParameters": {
-						"model_name": {
-							"value": "@pipeline().parameters.model_name",
-							"type": "Expression"
-						},
-						"model_path_on_blob": {
-							"value": "@pipeline().parameters.model_path_on_blob",
-							"type": "Expression"
-						},
 						"dataset_name": {
 							"value": "@pipeline().parameters.dataset_name",
+							"type": "Expression"
+						},
+						"dataset_path_on_blob": {
+							"value": "@pipeline().parameters.dataset_path_on_blob",
 							"type": "Expression"
 						},
 						"datastore_name": {
@@ -34,7 +30,7 @@
 							"type": "Expression"
 						}
 					},
-					"mlPipelineId": "d751a925-d12b-44f7-bd74-03b688cf9e2d"
+					"mlPipelineId": "835ad578-fd8b-45a4-939e-7f52ae21d51c"
 				},
 				"linkedServiceName": {
 					"referenceName": "AzureMLRundstedt",
@@ -43,17 +39,13 @@
 			}
 		],
 		"parameters": {
-			"model_name": {
-				"type": "string",
-				"defaultValue": "Finetuned_Bert_Model_IMBD"
-			},
-			"model_path_on_blob": {
-				"type": "string",
-				"defaultValue": "models/"
-			},
 			"dataset_name": {
 				"type": "string",
 				"defaultValue": "small_dataset_movie_ratings"
+			},
+			"dataset_path_on_blob": {
+				"type": "string",
+				"defaultValue": "datasets/small_dataset/"
 			},
 			"datastore_name": {
 				"type": "string",
@@ -61,7 +53,7 @@
 			}
 		},
 		"folder": {
-			"name": "Model_Deployment"
+			"name": "Dataset_Preparation"
 		},
 		"annotations": []
 	}
