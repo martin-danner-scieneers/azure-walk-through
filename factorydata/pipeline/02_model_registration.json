@@ -1,0 +1,68 @@
+{
+	"name": "02_model_registration",
+	"properties": {
+		"activities": [
+			{
+				"name": "Machine Learning Model Registration",
+				"type": "AzureMLExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"experimentName": "Model_Deployment_Rundstedt",
+					"mlPipelineParameters": {
+						"model_name": {
+							"value": "@pipeline().parameters.model_name",
+							"type": "Expression"
+						},
+						"model_file_path_on_blob": {
+							"value": "@pipeline().parameters.model_file_path_on_blob",
+							"type": "Expression"
+						},
+						"tag": {
+							"value": "@pipeline().parameters.tag",
+							"type": "Expression"
+						},
+						"datastore_name": {
+							"value": "@pipeline().parameters.datastore_name",
+							"type": "Expression"
+						}
+					},
+					"mlPipelineId": "269e727c-1d0f-436f-bab4-aef3824fb631"
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureMLRundstedt",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"parameters": {
+			"model_name": {
+				"type": "string",
+				"defaultValue": "Finetuned_Bert_Model_IMBD"
+			},
+			"model_file_path_on_blob": {
+				"type": "string",
+				"defaultValue": "models/Finetuned_Bert_Model_IMBD"
+			},
+			"tag": {
+				"type": "string",
+				"defaultValue": "MyCustomTag"
+			},
+			"datastore_name": {
+				"type": "string",
+				"defaultValue": "datalake_rundstedt"
+			}
+		},
+		"folder": {
+			"name": "Model_Deployment"
+		},
+		"annotations": []
+	}
+}
