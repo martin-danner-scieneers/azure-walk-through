@@ -1,5 +1,5 @@
 {
-	"name": "Model_training",
+	"name": "01_model_training",
 	"properties": {
 		"activities": [
 			{
@@ -17,8 +17,14 @@
 				"typeProperties": {
 					"experimentName": "Model_Deployment_Rundstedt",
 					"mlPipelineParameters": {
-						"model_name": "Finetuned_Bert_Model_V2",
-						"model_path_on_blob": "models/"
+						"model_name": {
+							"value": "@pipeline().parameters.model_name",
+							"type": "Expression"
+						},
+						"model_path_on_blob": {
+							"value": "@pipeline().parameters.model_path_on_blob",
+							"type": "Expression"
+						}
 					},
 					"mlPipelineId": "d751a925-d12b-44f7-bd74-03b688cf9e2d"
 				},
@@ -28,6 +34,16 @@
 				}
 			}
 		],
+		"parameters": {
+			"model_name": {
+				"type": "string",
+				"defaultValue": "Finetuned_Bert_Model_IMBD"
+			},
+			"model_path_on_blob": {
+				"type": "string",
+				"defaultValue": "models/"
+			}
+		},
 		"folder": {
 			"name": "Model_Deployment"
 		},

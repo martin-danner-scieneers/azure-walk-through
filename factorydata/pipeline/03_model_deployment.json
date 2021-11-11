@@ -1,0 +1,9 @@
+{
+	"name": "03_model_deployment",
+	"properties": {
+		"folder": {
+			"name": "Model_Deployment"
+		},
+		"annotations": []
+	}
+}
