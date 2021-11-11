@@ -26,8 +26,8 @@ e = Env()
 
 # Directory Setup
 base_dir = os.path.dirname(__file__)
-env_dir = os.path.join(base_dir, "env")
 script_dir = os.path.join(base_dir, "scripts")
+env_dir = os.path.join(script_dir, "env")
 
 # Get the workspace
 try:

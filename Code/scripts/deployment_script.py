@@ -9,7 +9,6 @@ Python code for finetuning a pretrained bert model
 """
 import sys
 import os
-sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 from azureml.core import Environment
 from azureml.core.model import InferenceConfig
 from azureml.core.webservice import AciWebservice
@@ -20,6 +19,10 @@ from azureml.core.run import _OfflineRun
 from typing import Tuple
 import logging
 import argparse
+from pathlib import Path
+
+
+
 
 logging.getLogger().setLevel(logging.DEBUG)
 
@@ -70,8 +73,8 @@ def deploy_model(ws: Workspace, model_name:str, service_name:str, entry_script_n
     # Set and specify inference config
     inference_config = InferenceConfig(
         environment=env,
-        entry_script=os.path.join(os.path.dirname(__file__), entry_script_name)
-    )
+        entry_script=entry_script_name)
+    
 
     # Set and specify deployment config
     try:
@@ -80,7 +83,7 @@ def deploy_model(ws: Workspace, model_name:str, service_name:str, entry_script_n
         logging.info("There is no registered model with specified name available. Please register the specified model first!")
 
     deployment_config = AciWebservice.deploy_configuration(cpu_cores=2, memory_gb=4)
-    service = registered_model.deploy(ws, service_name, [registered_model], inference_config, deployment_config)
+    service = registered_model.deploy(ws, service_name, [registered_model], inference_config, deployment_config, overwrite=True)
     service.wait_for_deployment(show_output=True)
     logging.info(service.state)
     logging.info("Deployment done!")
@@ -97,11 +100,11 @@ def main():
     service_name = args.service_name
 
     # Directory Setup
-    base_dir = os.path.dirname(os.path.dirname(__file__))
-    env_dir = os.path.join(base_dir, "env")
+    env_dir = "./env"
 
     # Name of the entry script
     entry_script_name = './entry_script.py'
+
 
     # Get the default workspace
     ws, _ = get_current_workspace()

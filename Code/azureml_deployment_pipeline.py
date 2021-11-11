@@ -14,22 +14,18 @@ from utils.attach_compute import get_compute_by_args
 from utils.env_variables import Env
 from azureml.core import Environment, Experiment, Workspace
 from azureml.core.runconfig import RunConfiguration
-from azureml.data import OutputFileDatasetConfig
 from azureml.pipeline.core import Pipeline, PipelineEndpoint, PipelineParameter
 from azureml.pipeline.steps import PythonScriptStep
 from azureml.core.authentication import InteractiveLoginAuthentication
 import os
-import uuid
-
-
 
 # Read the .env variables
 e = Env()
 
 # Directory Setup
 base_dir = os.path.dirname(__file__)
-env_dir = os.path.join(base_dir, "env")
 script_dir = os.path.join(base_dir, "scripts")
+env_dir = os.path.join(script_dir, "env")
 
 # Get the workspace
 try:
@@ -75,7 +71,7 @@ run_config.environment = env
 model_name = PipelineParameter(
     name="model_name", default_value="Finetuned_Bert_Model_IMBD")
 service_name = PipelineParameter(
-    name="service_name", default_value="Deployed_Bert_Model_IMBD_{}".format(uuid.uuid4().hex))
+    name="service_name", default_value="deployed-bert-model-imbd")
 
 
 # Setup python script task
