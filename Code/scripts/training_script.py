@@ -73,6 +73,11 @@ def write_model(model, model_name: str, run: Run, output_config: OutputFileDatas
 
 
 def train_bert_model():
+    """Finetunes a pretrained Bert Model
+
+    Returns:
+        model: finetuned Bert Model
+    """
 
     logging.info('Preprocessing training data!')
 

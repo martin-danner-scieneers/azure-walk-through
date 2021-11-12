@@ -44,7 +44,7 @@ def get_dataset_file(datastore: Datastore, path: str):
     """Gets the dataset file from the datastore and returns a dataset
 
     Args:
-        datastore (Datastore): Current datastore to work with
+        datastore (Datastore): Datastore to work with
         path (str): Path to the desired model file
 
     Returns:
@@ -56,6 +56,15 @@ def get_dataset_file(datastore: Datastore, path: str):
     return ds
 
 def register_dataset(datastore: Datastore, ws: Workspace, dataset_path_on_blob: str, dataset_name:str) -> None:
+    """Register blob from datalake storage as a dataset in azureml
+
+    Args:
+        datastore (Datastore): datastore pointing to datalake storage where blob can be found
+        ws (Workspace): Default Azure Workspace
+        dataset_path_on_blob (str): Path to the blob within the datalake storage container the datastore points to
+        dataset_name (str): Name to be assigend to the registered dataset
+    """
+
     logging.info('Dataset registration started!')
     dataset = get_dataset_file(datastore, dataset_path_on_blob)
     dataset.register(ws, name=dataset_name)

@@ -1,7 +1,7 @@
 """
 Created in November 2021
 
-Python code for finetuning a pretrained bert model
+Python code to deploy a model as an Azure Container Instance Webservice
 
 @author: Martin Danner
 @company: scieneers GmbH
@@ -52,7 +52,7 @@ def deploy_model(ws: Workspace, model_name:str, service_name:str, entry_script_n
     """Deployment of an already registered model as an azure container instance service
 
     Args:
-        ws (Workspace): [description]
+        ws (Workspace): Default Workspace
         service_name (str): Name of the azure container instance service
         entry_scipt_name (str): File name of the entry script
         env_dir (str): Directory containing the yaml environment file

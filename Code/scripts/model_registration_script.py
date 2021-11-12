@@ -1,7 +1,7 @@
 """
 Created in November 2021
 
-Python code for finetuning a pretrained bert model
+Python code to register a model in AzureML from datastore
 
 @author: Martin Danner
 @company: scieneers GmbH
@@ -59,6 +59,15 @@ def get_model_file_path(datastore: Datastore, path: str):
 
 
 def register_model(ws:Workspace, model_name:str, model_path, tags_dict: dict) -> None:
+    """Register blob from datalake storage as a model in azureml
+
+    Args:
+        ws (Workspace): Default Azure Workspace
+        model_name (str): Name to assign to the model to be registered in AzureML
+        model_file_path (str): consumable file path pointing to the blob of the specified model
+        tag (str): custom tag to assign to the model to be registerd in AzureML
+    """
+
     logging.info('Model registration started!')
     model = Model.register(ws, model_path, model_name, tags_dict)
     logging.info('Model registration done!')
