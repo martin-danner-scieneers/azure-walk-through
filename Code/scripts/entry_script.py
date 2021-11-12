@@ -1,3 +1,13 @@
+"""
+Created in November 2021
+
+Entry script which handles and processes the request during inference
+
+@author: Martin Danner
+@company: scieneers GmbH
+@mail: martin.danner@scieneers.de
+"""
+
 
 from transformers import AutoTokenizer
 import numpy as np

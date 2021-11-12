@@ -1,7 +1,7 @@
 """
 Created in November 2021
 
-Python code to construct the pipeline for model training
+Python code to construct the pipeline for model deployment
 
 @author: Martin Danner
 @company: scieneers GmbH

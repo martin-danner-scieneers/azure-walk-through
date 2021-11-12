@@ -1,7 +1,7 @@
 """
 Created in November 2021
 
-Python code to construct the pipeline for model registration
+Python code to construct the pipeline for dataset registration
 
 @author: Martin Danner
 @company: scieneers GmbH
