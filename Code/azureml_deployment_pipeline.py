@@ -69,7 +69,7 @@ run_config.environment = env
 
 # Setup pipeline parameters
 model_name = PipelineParameter(
-    name="model_name", default_value="Finetuned_Bert_Model_IMBD")
+    name="model_name", default_value="Test_Bert_Model_IMBD")
 service_name = PipelineParameter(
     name="service_name", default_value="deployed-bert-model-imbd")
 

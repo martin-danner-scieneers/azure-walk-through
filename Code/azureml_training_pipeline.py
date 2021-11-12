@@ -77,7 +77,7 @@ run_config.environment = env
 
 # Setup pipeline parameters
 model_name = PipelineParameter(
-    name="model_name", default_value="Finetuned_Bert_Model_IMBD")
+    name="model_name", default_value="Test_Bert_Model_IMBD")
 dataset_name = PipelineParameter(
     name="dataset_name", default_value="small_dataset_movie_ratings")
 model_path_on_blob = PipelineParameter(

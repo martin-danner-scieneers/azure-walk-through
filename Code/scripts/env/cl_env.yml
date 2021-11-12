@@ -16,5 +16,6 @@ dependencies:
     - transformers
     - datasets
     - python-dotenv
+    - inference-schema
     - azureml-defaults
     

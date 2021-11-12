@@ -70,9 +70,9 @@ run_config.environment = env
 
 # Setup pipeline parameters
 model_name = PipelineParameter(
-    name="model_name", default_value="Finetuned_Bert_Model_IMBD")
+    name="model_name", default_value="Test_Bert_Model_IMBD")
 model_file_path_on_blob = PipelineParameter(
-    name="model_file_path_on_blob", default_value="models/Finetuned_Bert_Model_IMBD")
+    name="model_file_path_on_blob", default_value="models/Test_Bert_Model_IMBD")
 tag = PipelineParameter(
     name="tag", default_value="MyCustomTag")
 datastore_name = PipelineParameter(
