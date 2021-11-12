@@ -82,7 +82,7 @@ def deploy_model(ws: Workspace, model_name:str, service_name:str, entry_script_n
     except:
         logging.info("There is no registered model with specified name available. Please register the specified model first!")
 
-    deployment_config = AciWebservice.deploy_configuration(cpu_cores=2, memory_gb=4)
+    deployment_config = AciWebservice.deploy_configuration(cpu_cores=2, memory_gb=4, auth_enabled=True)
     service = registered_model.deploy(ws, service_name, [registered_model], inference_config, deployment_config, overwrite=True)
     service.wait_for_deployment(show_output=True)
     logging.info(service.state)
