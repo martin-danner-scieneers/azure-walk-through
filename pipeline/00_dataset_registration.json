@@ -1,0 +1,62 @@
+{
+	"name": "00_dataset_registration",
+	"properties": {
+		"activities": [
+			{
+				"name": "Machine Learning Dataset Registration",
+				"type": "AzureMLExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"experimentName": "Dataset Registration",
+					"mlPipelineParameters": {
+						"dataset_name": {
+							"value": "@pipeline().parameters.dataset_name",
+							"type": "Expression"
+						},
+						"dataset_path_on_blob": {
+							"value": "@pipeline().parameters.dataset_path_on_blob",
+							"type": "Expression"
+						},
+						"datastore_name": {
+							"value": "@pipeline().parameters.datastore_name",
+							"type": "Expression"
+						}
+					},
+					"mlPipelineId": "835ad578-fd8b-45a4-939e-7f52ae21d51c"
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureMLRundstedt",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"parameters": {
+			"dataset_name": {
+				"type": "string",
+				"defaultValue": "small_dataset_movie_ratings"
+			},
+			"dataset_path_on_blob": {
+				"type": "string",
+				"defaultValue": "datasets/small_dataset/"
+			},
+			"datastore_name": {
+				"type": "string",
+				"defaultValue": "datalake_rundstedt"
+			}
+		},
+		"folder": {
+			"name": "Dataset_Preparation"
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-11-11T23:26:52Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

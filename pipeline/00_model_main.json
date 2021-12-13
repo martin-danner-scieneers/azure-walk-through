@@ -1,0 +1,134 @@
+{
+	"name": "00_model_main",
+	"properties": {
+		"activities": [
+			{
+				"name": "01_model_training",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "01_model_training",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"model_name": {
+							"value": "@pipeline().parameters.model_name",
+							"type": "Expression"
+						},
+						"model_path_on_blob": {
+							"value": "@pipeline().parameters.model_path_on_blob",
+							"type": "Expression"
+						},
+						"dataset_name": {
+							"value": "@pipeline().parameters.dataset_name",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "02_model_registration",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "01_model_training",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "02_model_registration",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"model_name": {
+							"value": "@pipeline().parameters.model_name",
+							"type": "Expression"
+						},
+						"model_file_path_on_blob": {
+							"value": "@concat(pipeline().parameters.model_path_on_blob, pipeline().parameters.model_name)",
+							"type": "Expression"
+						},
+						"tag": {
+							"value": "@pipeline().parameters.tag",
+							"type": "Expression"
+						},
+						"datastore_name": {
+							"value": "@pipeline().parameters.datastore_name",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "03_model_deployment",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "02_model_registration",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "03_model_deployment",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"model_name": {
+							"value": "@pipeline().parameters.model_name",
+							"type": "Expression"
+						},
+						"service_name": {
+							"value": "@pipeline().parameters.service_name",
+							"type": "Expression"
+						}
+					}
+				}
+			}
+		],
+		"parameters": {
+			"model_name": {
+				"type": "string",
+				"defaultValue": "Bert_Review_Movie_Ratings"
+			},
+			"model_path_on_blob": {
+				"type": "string",
+				"defaultValue": "models/"
+			},
+			"tag": {
+				"type": "string",
+				"defaultValue": "Model to analyze sentiment of movie ratings"
+			},
+			"datastore_name": {
+				"type": "string",
+				"defaultValue": "datalake_rundstedt"
+			},
+			"service_name": {
+				"type": "string",
+				"defaultValue": "bert-movie-rating-endpoint"
+			},
+			"dataset_name": {
+				"type": "string",
+				"defaultValue": "small_dataset_movie_ratings"
+			}
+		},
+		"folder": {
+			"name": "Model_Deployment"
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-11-11T23:26:54Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

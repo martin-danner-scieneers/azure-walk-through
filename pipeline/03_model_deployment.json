@@ -1,0 +1,54 @@
+{
+	"name": "03_model_deployment",
+	"properties": {
+		"activities": [
+			{
+				"name": "Machine Learning Deploy Model",
+				"type": "AzureMLExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"experimentName": "Model_Deployment",
+					"mlPipelineParameters": {
+						"model_name": {
+							"value": "@pipeline().parameters.model_name",
+							"type": "Expression"
+						},
+						"service_name": {
+							"value": "@pipeline().parameters.service_name",
+							"type": "Expression"
+						}
+					},
+					"mlPipelineId": "7580b066-399c-441f-a41c-e4d2daeea671"
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureMLRundstedt",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"parameters": {
+			"model_name": {
+				"type": "string",
+				"defaultValue": "Finetuned_Bert_Model_IMBD"
+			},
+			"service_name": {
+				"type": "string",
+				"defaultValue": "deployed-bert-model-imbd"
+			}
+		},
+		"folder": {
+			"name": "Model_Deployment"
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-11-11T23:26:53Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
