@@ -66,7 +66,7 @@
 					"url": "https://flaskjobrecommendationapp.azurewebsites.net/jobrecommender/test",
 					"method": "GET",
 					"headers": {
-						"authentication": {
+						"Authorization": {
 							"value": "@concat('Bearer ', variables('Token'))",
 							"type": "Expression"
 						}
