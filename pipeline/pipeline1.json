@@ -18,7 +18,7 @@
 					"url": "https://login.microsoftonline.com/201452c3-8938-4d5f-89f2-0f1098708589/oauth2/v2.0/token",
 					"method": "POST",
 					"headers": {
-						"Content_Type": "application/x-www-form-urlencoded"
+						"Content-Type": "application/x-www-form-urlencoded"
 					},
 					"body": "grant_type=client_credentials&client_id=39bec76c-28f5-4844-aee6-08cc07c15cb8&client_secret=x.H7Q~dFoi5w8CqlkJo4tOnGfMnAJJY3qh0Ce&scope=api://57eaba86-d855-48ea-8820-0e7edae39aca/.default"
 				}
