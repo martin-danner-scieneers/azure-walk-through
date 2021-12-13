@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Web1",
+				"name": "GetBearer",
 				"type": "WebActivity",
 				"dependsOn": [],
 				"policy": {
@@ -22,8 +22,64 @@
 					},
 					"body": "grant_type=client_credentials&client_id=39bec76c-28f5-4844-aee6-08cc07c15cb8&client_secret=x.H7Q~dFoi5w8CqlkJo4tOnGfMnAJJY3qh0Ce&scope=api://57eaba86-d855-48ea-8820-0e7edae39aca/.default"
 				}
+			},
+			{
+				"name": "StoreToken",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "GetBearer",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "Token",
+					"value": {
+						"value": "@activity('GetBearer').output.access_token ",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Request",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "StoreToken",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://flaskjobrecommendationapp.azurewebsites.net/jobrecommender/test",
+					"method": "GET",
+					"headers": {
+						"authentication": {
+							"value": "@concat('Bearer ', variables('Token'))",
+							"type": "Expression"
+						}
+					},
+					"body": "grant_type=client_credentials&client_id=39bec76c-28f5-4844-aee6-08cc07c15cb8&client_secret=x.H7Q~dFoi5w8CqlkJo4tOnGfMnAJJY3qh0Ce&scope=api://57eaba86-d855-48ea-8820-0e7edae39aca/.default"
+				}
 			}
 		],
+		"variables": {
+			"Token": {
+				"type": "String"
+			}
+		},
 		"annotations": []
 	}
 }
