@@ -7,6 +7,14 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "adf-rundstedt"
 		},
+		"AzureBlobStorageRundstedt_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorageRundstedt'"
+		},
+		"RestService1_clientSecret": {
+			"type": "secureString",
+			"metadata": "Secure string for 'clientSecret' of 'RestService1'"
+		},
 		"AzureMLRundstedt_properties_typeProperties_subscriptionId": {
 			"type": "string",
 			"defaultValue": "3aef07e0-41f3-4130-bc27-9d3652939fea"
@@ -18,6 +26,46 @@
 		"AzureMLRundstedt_properties_typeProperties_mlWorkspaceName": {
 			"type": "string",
 			"defaultValue": "azml-rundstedt"
+		},
+		"RestService1_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://flaskjobrecommendationapp.azurewebsites.net"
+		},
+		"RestService1_properties_typeProperties_clientId": {
+			"type": "string",
+			"defaultValue": "39bec76c-28f5-4844-aee6-08cc07c15cb8"
+		},
+		"trigger_test_properties_00_main_end2end_parameters_dataset_name": {
+			"type": "string",
+			"defaultValue": "small_dataset_movie_ratings"
+		},
+		"trigger_test_properties_00_main_end2end_parameters_dataset_path_on_blob": {
+			"type": "string",
+			"defaultValue": "datasets/small_dataset/"
+		},
+		"trigger_test_properties_00_main_end2end_parameters_datastore_name": {
+			"type": "string",
+			"defaultValue": "datalake_rundstedt"
+		},
+		"trigger_test_properties_00_main_end2end_parameters_model_name": {
+			"type": "string",
+			"defaultValue": "Test_Bert_Model_IMBD"
+		},
+		"trigger_test_properties_00_main_end2end_parameters_model_path_on_blob": {
+			"type": "string",
+			"defaultValue": "models/"
+		},
+		"trigger_test_properties_00_main_end2end_parameters_tag": {
+			"type": "string",
+			"defaultValue": "MyTag"
+		},
+		"trigger_test_properties_00_main_end2end_parameters_service_name": {
+			"type": "string",
+			"defaultValue": "deployed-model"
+		},
+		"trigger_test_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/3aef07e0-41f3-4130-bc27-9d3652939fea/resourceGroups/walk-through-azureml-rundstedt/providers/Microsoft.Storage/storageAccounts/dlrundstedt"
 		},
 		"containerUri": {
 			"type": "string",
@@ -46,6 +94,12 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
+					"AzureBlobStorageRundstedt_connectionString": {
+						"value": "[parameters('AzureBlobStorageRundstedt_connectionString')]"
+					},
+					"RestService1_clientSecret": {
+						"value": "[parameters('RestService1_clientSecret')]"
+					},
 					"AzureMLRundstedt_properties_typeProperties_subscriptionId": {
 						"value": "[parameters('AzureMLRundstedt_properties_typeProperties_subscriptionId')]"
 					},
@@ -54,6 +108,36 @@
 					},
 					"AzureMLRundstedt_properties_typeProperties_mlWorkspaceName": {
 						"value": "[parameters('AzureMLRundstedt_properties_typeProperties_mlWorkspaceName')]"
+					},
+					"RestService1_properties_typeProperties_url": {
+						"value": "[parameters('RestService1_properties_typeProperties_url')]"
+					},
+					"RestService1_properties_typeProperties_clientId": {
+						"value": "[parameters('RestService1_properties_typeProperties_clientId')]"
+					},
+					"trigger_test_properties_00_main_end2end_parameters_dataset_name": {
+						"value": "[parameters('trigger_test_properties_00_main_end2end_parameters_dataset_name')]"
+					},
+					"trigger_test_properties_00_main_end2end_parameters_dataset_path_on_blob": {
+						"value": "[parameters('trigger_test_properties_00_main_end2end_parameters_dataset_path_on_blob')]"
+					},
+					"trigger_test_properties_00_main_end2end_parameters_datastore_name": {
+						"value": "[parameters('trigger_test_properties_00_main_end2end_parameters_datastore_name')]"
+					},
+					"trigger_test_properties_00_main_end2end_parameters_model_name": {
+						"value": "[parameters('trigger_test_properties_00_main_end2end_parameters_model_name')]"
+					},
+					"trigger_test_properties_00_main_end2end_parameters_model_path_on_blob": {
+						"value": "[parameters('trigger_test_properties_00_main_end2end_parameters_model_path_on_blob')]"
+					},
+					"trigger_test_properties_00_main_end2end_parameters_tag": {
+						"value": "[parameters('trigger_test_properties_00_main_end2end_parameters_tag')]"
+					},
+					"trigger_test_properties_00_main_end2end_parameters_service_name": {
+						"value": "[parameters('trigger_test_properties_00_main_end2end_parameters_service_name')]"
+					},
+					"trigger_test_properties_typeProperties_scope": {
+						"value": "[parameters('trigger_test_properties_typeProperties_scope')]"
 					}
 				}
 			},

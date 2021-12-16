@@ -5,6 +5,12 @@
 		"factoryName": {
 			"value": "adf-rundstedt"
 		},
+		"AzureBlobStorageRundstedt_connectionString": {
+			"value": ""
+		},
+		"RestService1_clientSecret": {
+			"value": ""
+		},
 		"AzureMLRundstedt_properties_typeProperties_subscriptionId": {
 			"value": "3aef07e0-41f3-4130-bc27-9d3652939fea"
 		},
@@ -13,6 +19,36 @@
 		},
 		"AzureMLRundstedt_properties_typeProperties_mlWorkspaceName": {
 			"value": "azml-rundstedt"
+		},
+		"RestService1_properties_typeProperties_url": {
+			"value": "https://flaskjobrecommendationapp.azurewebsites.net"
+		},
+		"RestService1_properties_typeProperties_clientId": {
+			"value": "39bec76c-28f5-4844-aee6-08cc07c15cb8"
+		},
+		"trigger_test_properties_00_main_end2end_parameters_dataset_name": {
+			"value": "small_dataset_movie_ratings"
+		},
+		"trigger_test_properties_00_main_end2end_parameters_dataset_path_on_blob": {
+			"value": "datasets/small_dataset/"
+		},
+		"trigger_test_properties_00_main_end2end_parameters_datastore_name": {
+			"value": "datalake_rundstedt"
+		},
+		"trigger_test_properties_00_main_end2end_parameters_model_name": {
+			"value": "Test_Bert_Model_IMBD"
+		},
+		"trigger_test_properties_00_main_end2end_parameters_model_path_on_blob": {
+			"value": "models/"
+		},
+		"trigger_test_properties_00_main_end2end_parameters_tag": {
+			"value": "MyTag"
+		},
+		"trigger_test_properties_00_main_end2end_parameters_service_name": {
+			"value": "deployed-model"
+		},
+		"trigger_test_properties_typeProperties_scope": {
+			"value": "/subscriptions/3aef07e0-41f3-4130-bc27-9d3652939fea/resourceGroups/walk-through-azureml-rundstedt/providers/Microsoft.Storage/storageAccounts/dlrundstedt"
 		}
 	}
 }

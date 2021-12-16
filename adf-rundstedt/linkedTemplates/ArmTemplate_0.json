@@ -7,6 +7,14 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "adf-rundstedt"
 		},
+		"AzureBlobStorageRundstedt_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorageRundstedt'"
+		},
+		"RestService1_clientSecret": {
+			"type": "secureString",
+			"metadata": "Secure string for 'clientSecret' of 'RestService1'"
+		},
 		"AzureMLRundstedt_properties_typeProperties_subscriptionId": {
 			"type": "string",
 			"defaultValue": "3aef07e0-41f3-4130-bc27-9d3652939fea"
@@ -18,12 +26,157 @@
 		"AzureMLRundstedt_properties_typeProperties_mlWorkspaceName": {
 			"type": "string",
 			"defaultValue": "azml-rundstedt"
+		},
+		"RestService1_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://flaskjobrecommendationapp.azurewebsites.net"
+		},
+		"RestService1_properties_typeProperties_clientId": {
+			"type": "string",
+			"defaultValue": "39bec76c-28f5-4844-aee6-08cc07c15cb8"
+		},
+		"trigger_test_properties_00_main_end2end_parameters_dataset_name": {
+			"type": "string",
+			"defaultValue": "small_dataset_movie_ratings"
+		},
+		"trigger_test_properties_00_main_end2end_parameters_dataset_path_on_blob": {
+			"type": "string",
+			"defaultValue": "datasets/small_dataset/"
+		},
+		"trigger_test_properties_00_main_end2end_parameters_datastore_name": {
+			"type": "string",
+			"defaultValue": "datalake_rundstedt"
+		},
+		"trigger_test_properties_00_main_end2end_parameters_model_name": {
+			"type": "string",
+			"defaultValue": "Test_Bert_Model_IMBD"
+		},
+		"trigger_test_properties_00_main_end2end_parameters_model_path_on_blob": {
+			"type": "string",
+			"defaultValue": "models/"
+		},
+		"trigger_test_properties_00_main_end2end_parameters_tag": {
+			"type": "string",
+			"defaultValue": "MyTag"
+		},
+		"trigger_test_properties_00_main_end2end_parameters_service_name": {
+			"type": "string",
+			"defaultValue": "deployed-model"
+		},
+		"trigger_test_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/3aef07e0-41f3-4130-bc27-9d3652939fea/resourceGroups/walk-through-azureml-rundstedt/providers/Microsoft.Storage/storageAccounts/dlrundstedt"
 		}
 	},
 	"variables": {
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/pipeline1')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "GetBearer",
+						"type": "WebActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"url": "https://login.microsoftonline.com/201452c3-8938-4d5f-89f2-0f1098708589/oauth2/v2.0/token",
+							"method": "POST",
+							"headers": {
+								"Content-Type": "application/x-www-form-urlencoded"
+							},
+							"body": "grant_type=client_credentials&client_id=39bec76c-28f5-4844-aee6-08cc07c15cb8&client_secret=x.H7Q~dFoi5w8CqlkJo4tOnGfMnAJJY3qh0Ce&scope=api://57eaba86-d855-48ea-8820-0e7edae39aca/.default"
+						}
+					},
+					{
+						"name": "StoreToken",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "GetBearer",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "Token",
+							"value": {
+								"value": "@activity('GetBearer').output.access_token ",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Request",
+						"type": "WebActivity",
+						"dependsOn": [
+							{
+								"activity": "StoreToken",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"url": "https://flaskjobrecommendationapp.azurewebsites.net/jobrecommender/test",
+							"method": "GET",
+							"headers": {
+								"Authorization": {
+									"value": "@concat('Bearer ', variables('Token'))",
+									"type": "Expression"
+								}
+							},
+							"body": "grant_type=client_credentials&client_id=39bec76c-28f5-4844-aee6-08cc07c15cb8&client_secret=x.H7Q~dFoi5w8CqlkJo4tOnGfMnAJJY3qh0Ce&scope=api://57eaba86-d855-48ea-8820-0e7edae39aca/.default"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"variables": {
+					"Token": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureBlobStorageRundstedt')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('AzureBlobStorageRundstedt_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
 		{
 			"name": "[concat(parameters('factoryName'), '/AzureMLRundstedt')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
@@ -36,6 +189,28 @@
 					"resourceGroupName": "[parameters('AzureMLRundstedt_properties_typeProperties_resourceGroupName')]",
 					"mlWorkspaceName": "[parameters('AzureMLRundstedt_properties_typeProperties_mlWorkspaceName')]",
 					"authentication": "MSI"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/RestService1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "RestService",
+				"typeProperties": {
+					"url": "[parameters('RestService1_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "OAuth2ClientCredential",
+					"clientId": "[parameters('RestService1_properties_typeProperties_clientId')]",
+					"clientSecret": {
+						"type": "SecureString",
+						"value": "[parameters('RestService1_clientSecret')]"
+					},
+					"tokenEndpoint": "https://login.microsoftonline.com/201452c3-8938-4d5f-89f2-0f1098708589/oauth2/v2.0/token",
+					"scope": "api://57eaba86-d855-48ea-8820-0e7edae39aca/.default"
 				}
 			},
 			"dependsOn": []
@@ -103,7 +278,8 @@
 				"folder": {
 					"name": "Dataset_Preparation"
 				},
-				"annotations": []
+				"annotations": [],
+				"lastPublishTime": "2021-11-11T23:26:52Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/AzureMLRundstedt')]"
@@ -172,7 +348,8 @@
 				"folder": {
 					"name": "Model_Deployment"
 				},
-				"annotations": []
+				"annotations": [],
+				"lastPublishTime": "2021-11-11T23:26:53Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/AzureMLRundstedt')]"
@@ -249,7 +426,8 @@
 				"folder": {
 					"name": "Model_Deployment"
 				},
-				"annotations": []
+				"annotations": [],
+				"lastPublishTime": "2021-11-11T23:26:53Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/AzureMLRundstedt')]"
@@ -310,10 +488,31 @@
 				"folder": {
 					"name": "Model_Deployment"
 				},
-				"annotations": []
+				"annotations": [],
+				"lastPublishTime": "2021-11-11T23:26:53Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/AzureMLRundstedt')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/RestResource1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "RestService1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "RestResource",
+				"typeProperties": {
+					"relativeUrl": "/jobrecommender/test"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/RestService1')]"
 			]
 		},
 		{
@@ -486,7 +685,8 @@
 						"defaultValue": "deployed-test-bert-model-imbd"
 					}
 				},
-				"annotations": []
+				"annotations": [],
+				"lastPublishTime": "2021-11-11T23:26:54Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/01_model_training')]",
@@ -630,12 +830,51 @@
 				"folder": {
 					"name": "Model_Deployment"
 				},
-				"annotations": []
+				"annotations": [],
+				"lastPublishTime": "2021-11-11T23:26:54Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/01_model_training')]",
 				"[concat(variables('factoryId'), '/pipelines/02_model_registration')]",
 				"[concat(variables('factoryId'), '/pipelines/03_model_deployment')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/trigger_test')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "00_main_end2end",
+							"type": "PipelineReference"
+						},
+						"parameters": {
+							"dataset_name": "[parameters('trigger_test_properties_00_main_end2end_parameters_dataset_name')]",
+							"dataset_path_on_blob": "[parameters('trigger_test_properties_00_main_end2end_parameters_dataset_path_on_blob')]",
+							"datastore_name": "[parameters('trigger_test_properties_00_main_end2end_parameters_datastore_name')]",
+							"model_name": "[parameters('trigger_test_properties_00_main_end2end_parameters_model_name')]",
+							"model_path_on_blob": "[parameters('trigger_test_properties_00_main_end2end_parameters_model_path_on_blob')]",
+							"tag": "[parameters('trigger_test_properties_00_main_end2end_parameters_tag')]",
+							"service_name": "[parameters('trigger_test_properties_00_main_end2end_parameters_service_name')]"
+						}
+					}
+				],
+				"type": "BlobEventsTrigger",
+				"typeProperties": {
+					"blobPathBeginsWith": "/data/blobs/title.pkl",
+					"ignoreEmptyBlobs": true,
+					"scope": "[parameters('trigger_test_properties_typeProperties_scope')]",
+					"events": [
+						"Microsoft.Storage.BlobCreated"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/00_main_end2end')]"
 			]
 		}
 	]
