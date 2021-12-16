@@ -8,6 +8,15 @@
 				"pipelineReference": {
 					"referenceName": "00_main_end2end",
 					"type": "PipelineReference"
+				},
+				"parameters": {
+					"dataset_name": "small_dataset_movie_ratings",
+					"dataset_path_on_blob": "datasets/small_dataset/",
+					"datastore_name": "datalake_rundstedt",
+					"model_name": "Test_Bert_Model_IMBD",
+					"model_path_on_blob": "models/",
+					"tag": "MyTag",
+					"service_name": "deployed-model"
 				}
 			}
 		],
