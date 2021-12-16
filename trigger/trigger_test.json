@@ -22,8 +22,7 @@
 		],
 		"type": "BlobEventsTrigger",
 		"typeProperties": {
-			"blobPathBeginsWith": "/data/blobs/title",
-			"blobPathEndsWith": ".pkl",
+			"blobPathBeginsWith": "/data/blobs/title.pkl",
 			"ignoreEmptyBlobs": true,
 			"scope": "/subscriptions/3aef07e0-41f3-4130-bc27-9d3652939fea/resourceGroups/walk-through-azureml-rundstedt/providers/Microsoft.Storage/storageAccounts/dlrundstedt",
 			"events": [
