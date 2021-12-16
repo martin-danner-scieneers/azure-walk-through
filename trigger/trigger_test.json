@@ -8,21 +8,12 @@
 				"pipelineReference": {
 					"referenceName": "00_main_end2end",
 					"type": "PipelineReference"
-				},
-				"parameters": {
-					"dataset_name": "small_dataset_movie_ratings",
-					"dataset_path_on_blob": "datasets/small_dataset/",
-					"datastore_name": "datalake_rundstedt",
-					"model_name": "Test_Bert_Model_IMBD",
-					"model_path_on_blob": "models/",
-					"tag": "MyTag",
-					"service_name": "deployed-model"
 				}
 			}
 		],
 		"type": "BlobEventsTrigger",
 		"typeProperties": {
-			"blobPathBeginsWith": "/data/blobs/title.pkl",
+			"blobPathBeginsWith": "/data/blobs/data/title",
 			"ignoreEmptyBlobs": true,
 			"scope": "/subscriptions/3aef07e0-41f3-4130-bc27-9d3652939fea/resourceGroups/walk-through-azureml-rundstedt/providers/Microsoft.Storage/storageAccounts/dlrundstedt",
 			"events": [
